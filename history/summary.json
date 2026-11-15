@@ -23,16 +23,18 @@
     "icon": "https://icons.duckduckgo.com/ip3/joshirando.de.ico",
     "slug": "joshirando-de",
     "status": "down",
-    "uptime": "100.00%",
-    "uptimeDay": "100.00%",
-    "uptimeWeek": "100.00%",
-    "uptimeMonth": "100.00%",
-    "uptimeYear": "100.00%",
+    "uptime": "59.13%",
+    "uptimeDay": "59.13%",
+    "uptimeWeek": "59.13%",
+    "uptimeMonth": "59.13%",
+    "uptimeYear": "59.13%",
     "time": 36,
     "timeDay": 36,
     "timeWeek": 36,
     "timeMonth": 36,
     "timeYear": 36,
-    "dailyMinutesDown": {}
+    "dailyMinutesDown": {
+      "2026-11-15": 0
+    }
   }
 ]
