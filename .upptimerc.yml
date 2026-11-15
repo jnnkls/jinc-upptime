@@ -7,16 +7,44 @@ sites:
     url: https://jnnkls.dev
   - name: Joshirando.de
     url: https://joshirando.de
+  - name: Mail
+    url: https://mail.jinc.io
+  - name: ID (SSO)
+    url: https://id.jinc.io
+  - name: ntfy
+    url: https://ntfy.jinc.io/v1/health
+  - name: Bastion
+    url: https://bastion.jinc.io
+    expectedStatusCodes: [401] # behind basic auth, 401 means up
+  - name: Matrix
+    url: https://matrix.jnnkls.wtf/_matrix/client/versions
+  - name: Immich
+    url: https://immich.jinc.io/api/server/ping
+  - name: n8n
+    url: https://n8n.jinc.io/healthz
+  - name: HedgeDoc
+    url: https://hedgedoc.jinc.io
+  - name: Rallly
+    url: https://rallly.jinc.io
+  - name: Atuin
+    url: https://atuin.jinc.io
+  - name: Gist
+    url: https://gist.jinc.io/-/all
+  - name: Drop
+    url: https://drop.jinc.io
+  - name: KitchenOwl
+    url: https://kitchenowl.jinc.io
+  - name: Watchbin
+    url: https://watchbin.jinc.io
 
 status-website:
   # Add your custom domain name, or remove the `cname` line if you don't have a domain
   # Uncomment the `baseUrl` line if you don't have a custom domain and add your repo name there
   cname: status.jinc.io
   # baseUrl: /your-repo-name
-  logoUrl: https://raw.githubusercontent.com/upptime/upptime.js.org/master/static/img/icon.svg
-  name: Upptime
-  introTitle: "**Upptime** is the open-source uptime monitor and status page, powered entirely by GitHub."
-  introMessage: This is a sample status page which uses **real-time** data from our [GitHub repository](https://github.com/upptime/upptime). No server required — just GitHub Actions, Issues, and Pages. [**Get your own for free**](https://github.com/upptime/upptime)
+  name: jinc.io Status
+  introTitle: "**jinc.io** service status"
+  introMessage: Live availability of jinc.io services, checked externally every 5 minutes. Outages and maintenance are listed below as incidents.
   navbar:
     - title: Status
       href: /
