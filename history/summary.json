@@ -41,11 +41,11 @@
     "icon": "https://icons.duckduckgo.com/ip3/mail.jinc.io.ico",
     "slug": "mail",
     "status": "up",
-    "uptime": "56.30%",
-    "uptimeDay": "56.30%",
-    "uptimeWeek": "56.30%",
-    "uptimeMonth": "56.30%",
-    "uptimeYear": "56.30%",
+    "uptime": "59.74%",
+    "uptimeDay": "59.74%",
+    "uptimeWeek": "59.74%",
+    "uptimeMonth": "59.74%",
+    "uptimeYear": "59.74%",
     "time": 755,
     "timeDay": 755,
     "timeWeek": 755,
@@ -79,19 +79,17 @@
     "icon": "https://icons.duckduckgo.com/ip3/ntfy.jinc.io.ico",
     "slug": "ntfy",
     "status": "up",
-    "uptime": "68.12%",
-    "uptimeDay": "68.12%",
-    "uptimeWeek": "68.12%",
-    "uptimeMonth": "68.12%",
-    "uptimeYear": "68.12%",
+    "uptime": "100.00%",
+    "uptimeDay": "100.00%",
+    "uptimeWeek": "100.00%",
+    "uptimeMonth": "100.00%",
+    "uptimeYear": "100.00%",
     "time": 453,
     "timeDay": 453,
     "timeWeek": 453,
     "timeMonth": 453,
     "timeYear": 453,
-    "dailyMinutesDown": {
-      "2026-11-15": 13
-    }
+    "dailyMinutesDown": {}
   },
   {
     "name": "Bastion",
@@ -99,19 +97,17 @@
     "icon": "https://icons.duckduckgo.com/ip3/bastion.jinc.io.ico",
     "slug": "bastion",
     "status": "up",
-    "uptime": "79.92%",
-    "uptimeDay": "79.92%",
-    "uptimeWeek": "79.92%",
-    "uptimeMonth": "79.92%",
-    "uptimeYear": "79.92%",
+    "uptime": "100.00%",
+    "uptimeDay": "100.00%",
+    "uptimeWeek": "100.00%",
+    "uptimeMonth": "100.00%",
+    "uptimeYear": "100.00%",
     "time": 490,
     "timeDay": 490,
     "timeWeek": 490,
     "timeMonth": 490,
     "timeYear": 490,
-    "dailyMinutesDown": {
-      "2026-11-15": 8
-    }
+    "dailyMinutesDown": {}
   },
   {
     "name": "Matrix",
@@ -137,19 +133,17 @@
     "icon": "https://icons.duckduckgo.com/ip3/immich.jinc.io.ico",
     "slug": "immich",
     "status": "up",
-    "uptime": "91.71%",
-    "uptimeDay": "91.71%",
-    "uptimeWeek": "91.71%",
-    "uptimeMonth": "91.71%",
-    "uptimeYear": "91.71%",
+    "uptime": "100.00%",
+    "uptimeDay": "100.00%",
+    "uptimeWeek": "100.00%",
+    "uptimeMonth": "100.00%",
+    "uptimeYear": "100.00%",
     "time": 475,
     "timeDay": 475,
     "timeWeek": 475,
     "timeMonth": 475,
     "timeYear": 475,
-    "dailyMinutesDown": {
-      "2026-11-15": 3
-    }
+    "dailyMinutesDown": {}
   },
   {
     "name": "n8n",
@@ -372,19 +366,19 @@
     "url": "https://cinny.jnnkls.wtf",
     "icon": "https://icons.duckduckgo.com/ip3/cinny.jnnkls.wtf.ico",
     "slug": "cinny",
-    "status": "down",
-    "uptime": "0.77%",
-    "uptimeDay": "0.77%",
-    "uptimeWeek": "0.77%",
-    "uptimeMonth": "0.77%",
-    "uptimeYear": "0.77%",
-    "time": 241,
-    "timeDay": 241,
-    "timeWeek": 241,
-    "timeMonth": 241,
-    "timeYear": 241,
+    "status": "up",
+    "uptime": "1.36%",
+    "uptimeDay": "1.36%",
+    "uptimeWeek": "1.36%",
+    "uptimeMonth": "1.36%",
+    "uptimeYear": "1.36%",
+    "time": 435,
+    "timeDay": 435,
+    "timeWeek": 435,
+    "timeMonth": 435,
+    "timeYear": 435,
     "dailyMinutesDown": {
-      "2026-11-15": 29
+      "2026-11-15": 32
     }
   },
   {
