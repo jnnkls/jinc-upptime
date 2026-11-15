@@ -3,10 +3,12 @@ owner: jnnkls # Your GitHub organization or username, where this repository live
 repo: jinc-upptime # The name of this repository
 
 sites:
-  - name: Jnnkls
+  - name: homepage
     url: https://jnnkls.dev
-  - name: Joshirando.de
+  - name: joshirando.de
     url: https://joshirando.de
+    headers:
+      - "X-Upptime-Token: $UPPTIME_WAF_TOKEN" # passes the zone's IP/geo WAF block
   - name: Mail
     url: https://mail.jinc.io
   - name: ID (SSO)
@@ -32,10 +34,30 @@ sites:
     url: https://gist.jinc.io/-/all
   - name: Drop
     url: https://drop.jinc.io
-  - name: KitchenOwl
-    url: https://kitchenowl.jinc.io
   - name: Watchbin
     url: https://watchbin.jinc.io
+  - name: Braid
+    url: https://braid.jinc.io/auth/login
+  - name: VERT
+    url: https://vert.jinc.io
+  - name: Hoppscotch
+    url: https://hoppscotch.jinc.io
+  - name: PDF
+    url: https://pdf.jinc.io
+  - name: Slink
+    url: https://slink.jinc.io/explore
+  - name: Cinny
+    url: https://cinny.jnnkls.wtf
+  - name: ByteStash
+    url: https://bytestash.jinc.io
+  - name: Rybbit
+    url: https://rybbit.jinc.io
+  - name: damast.dev
+    url: https://damast.dev
+  - name: quic.run
+    url: https://quic.run
+  - name: textfsm101.com
+    url: https://textfsm101.com
 
 status-website:
   # Add your custom domain name, or remove the `cname` line if you don't have a domain
