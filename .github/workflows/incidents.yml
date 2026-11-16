@@ -1,0 +1,48 @@
+# Custom workflow (not managed by Upptime; its template update only replaces its own workflow files).
+# Turns status/maintenance issues and their comments into static JSON + Atom feed under assets/,
+# which the Static Site CI copies onto the status page.
+name: Incidents CI
+on:
+  issues:
+    types: [opened, edited, closed, reopened, labeled, unlabeled, deleted]
+  issue_comment:
+    types: [created, edited, deleted]
+  schedule:
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+    inputs:
+      full:
+        description: "Rebuild all incidents from scratch"
+        type: boolean
+        default: false
+concurrency:
+  group: incidents
+  cancel-in-progress: false
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # GH_PAT instead of GITHUB_TOKEN: pushes made with GITHUB_TOKEN do not trigger Static Site CI
+          token: ${{ secrets.GH_PAT }}
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+      - run: node --test scripts/
+      - name: Build incident data
+        run: node scripts/incidents.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # deleted issues never show up in an incremental fetch, so rebuild fully then
+          FULL: ${{ ((github.event_name == 'issues' && github.event.action == 'deleted') || inputs.full) && '1' || '0' }}
+      - name: Commit if changed
+        run: |
+          git add assets/incidents assets/feed.xml
+          git diff --cached --quiet && { echo "No changes"; exit 0; }
+          git -c user.name="Upptime Bot" -c user.email="73812536+upptime-bot@users.noreply.github.com" \
+            commit -m ":memo: Update incident data"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 5)); done
+          exit 1

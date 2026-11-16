@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>jinc.io Status</title>
+  <id>https://status.jinc.io/</id>
+  <link href="https://status.jinc.io/"/>
+  <link rel="self" href="https://status.jinc.io/feed.xml"/>
+  <updated>2026-11-15T22:26:45Z</updated>
+  <entry>
+    <id>https://github.com/jnnkls/jinc-upptime/issues/4</id>
+    <title>[Resolved] Mail is down</title>
+    <link href="https://status.jinc.io/incidents/#4"/>
+    <published>2026-11-15T22:04:53Z</published>
+    <updated>2026-11-15T22:22:44Z</updated>
+    <content type="text">RESOLVED (2026-11-15T22:22:43Z): Mail is back up in 90e72d0 after 17 minutes.
+
+INVESTIGATING (2026-11-15T22:04:53Z): Mail (https://mail.jinc.io) was down:
+- HTTP code: 0
+- Response time: 0 ms</content>
+  </entry>
+  <entry>
+    <id>https://github.com/jnnkls/jinc-upptime/issues/3</id>
+    <title>[Resolved] Cinny is down</title>
+    <link href="https://status.jinc.io/incidents/#3"/>
+    <published>2026-11-15T21:54:58Z</published>
+    <updated>2026-11-15T22:26:45Z</updated>
+    <content type="text">RESOLVED (2026-11-15T22:26:44Z): Cinny is back up in 24e6c81 after 31 minutes.
+
+INVESTIGATING (2026-11-15T21:54:58Z): Cinny (https://cinny.jnnkls.wtf) was down:
+- HTTP code: 404
+- Response time: 146 ms</content>
+  </entry>
+</feed>
