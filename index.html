@@ -3,97 +3,32 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="dark">
 <title>jinc.io Status</title>
 <meta name="description" content="Live availability and incident history of jinc.io services.">
-<style>
-  :root {
-    --bg: #212121; --surface: #292929; --border: #424242;
-    --text: #dadada; --muted: #8b949e; --accent: #79c0ff;
-    --up: #3fb950; --minor: #d29922; --major: #ff7b72; --nodata: #3a3a3a;
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text);
-    font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif; }
-  a { color: var(--accent); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  main { max-width: 860px; margin: 0 auto; padding: 32px 16px 64px; }
-  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-  header h1 { font-size: 1.4rem; margin: 0; font-weight: 600; letter-spacing: -.01em; }
-  header h1 span { color: var(--muted); font-weight: 400; }
-  header nav a { color: var(--muted); font-size: .9rem; margin-left: 16px; }
-  .banner { border-radius: 6px; padding: 16px 20px; font-size: 1.15rem; font-weight: 600; color: #0d1117; margin-bottom: 32px; }
-  .banner.up { background: var(--up); } .banner.minor { background: var(--minor); } .banner.major { background: var(--major); }
-  .banner.loading { background: var(--surface); color: var(--muted); font-weight: 400; }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 40px; }
-  .incident { padding: 16px 20px; border-bottom: 1px solid var(--border); }
-  .incident:last-child { border-bottom: 0; }
-  .incident h3 { margin: 0 0 4px; font-size: 1rem; }
-  .incident.active h3 { color: var(--major); }
-  .incident p { margin: 0; color: var(--muted); font-size: .875rem; }
-  .component { padding: 16px 20px; border-bottom: 1px solid var(--border); }
-  .component:last-child { border-bottom: 0; }
-  .row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-  .row .name { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .state { font-size: .875rem; white-space: nowrap; }
-  .state.up { color: var(--up); } .state.degraded { color: var(--minor); } .state.down { color: var(--major); }
-  .bars { display: flex; gap: 2px; height: 34px; margin: 10px 0 6px; }
-  .bar { flex: 1; border-radius: 2px; background: var(--up); min-width: 2px; }
-  .bar.minor { background: var(--minor); } .bar.major { background: var(--major); } .bar.nodata { background: var(--nodata); }
-  .bar:hover { opacity: .7; }
-  .legend { display: flex; justify-content: space-between; color: var(--muted); font-size: .75rem; }
-  .legend .line { flex: 1; height: 1px; background: var(--border); margin: auto 12px; }
-  h2 { font-size: 1.15rem; font-weight: 600; margin: 0 0 16px; }
-  .day { padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid var(--border); }
-  .day h4 { margin: 0 0 8px; font-size: .95rem; }
-  .day .none { color: var(--muted); font-size: .9rem; margin: 0; }
-  .day .incident { padding: 6px 0; border: 0; }
-  #tip { position: fixed; pointer-events: none; background: #161616; border: 1px solid var(--border); border-radius: 6px;
-    padding: 8px 12px; font-size: .8rem; box-shadow: 0 6px 20px rgba(0,0,0,.5); display: none; z-index: 10; max-width: 240px; }
-  #tip b { display: block; margin-bottom: 2px; }
-  footer { color: var(--muted); font-size: .8rem; text-align: center; }
-  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-  /* shortcut: phones show 30 days instead of 90, like Statuspage */
-  @media (max-width: 600px) { .bar:nth-child(-n+60) { display: none; } .legend .from::after { content: "30 days ago"; } }
-  @media (min-width: 601px) { .legend .from::after { content: "90 days ago"; } }
-</style>
+<link rel="stylesheet" href="/style.css">
+<link rel="alternate" type="application/atom+xml" title="jinc.io Status" href="/feed.xml">
 </head>
 <body>
 <main>
   <header>
-    <h1>jinc.io <span>Status</span></h1>
-    <nav><a href="https://jnnkls.dev">jnnkls.dev</a><a href="https://github.com/jnnkls/jinc-upptime">GitHub</a></nav>
+    <h1><a href="/">jinc.io <span>Status</span></a></h1>
+    <nav><a href="/" aria-current="page">Status</a><a href="/incidents/">Incidents</a><a href="/uptime/">Uptime</a><a href="/feed.xml">Feed</a></nav>
   </header>
   <div id="banner" class="banner loading">Loading status…</div>
   <div id="active"></div>
   <div id="components" class="card" aria-label="Services"></div>
   <h2>Past Incidents</h2>
-  <div id="history"></div>
+  <div id="history"><p class="none">Loading…</p></div>
+  <p><a href="/incidents/">Incident History →</a></p>
   <footer>Checked every 5 minutes from GitHub Actions · Powered by <a href="https://upptime.js.org">Upptime</a></footer>
 </main>
-<div id="tip" role="tooltip"></div>
+<script src="/common.js"></script>
 <script>
-const REPO = "jnnkls/jinc-upptime";
 const DAYS = 90, HISTORY_DAYS = 14;
-// shortcut: monitoring started here; days before render as "no data". Upgrade by reading each history/<slug>.yml startTime.
-const DATA_START = "2026-11-15";
-
-const $ = (id) => document.getElementById(id);
-const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
-const dayKey = (d) => d.toISOString().slice(0, 10);
-const fmtDay = (key) => new Date(key + "T00:00:00Z").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
-const fmtTime = (iso) => new Date(iso).toLocaleString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
-const fmtDur = (ms) => { const m = Math.max(1, Math.round(ms / 60000)); return m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${m % 60} min`; };
-const STATE_TEXT = { up: "Operational", degraded: "Degraded Performance", down: "Major Outage" };
 
 function lastDays(n) {
   const today = new Date(); today.setUTCHours(0, 0, 0, 0);
   return Array.from({ length: n }, (_, i) => dayKey(new Date(today - (n - 1 - i) * 864e5)));
-}
-function barLevel(day, minutes) {
-  if (day < DATA_START) return "nodata";
-  if (!minutes) return "up";
-  return minutes < 60 ? "minor" : "major";
 }
 function overall(sites) {
   const bad = sites.filter((s) => s.status !== "up").length;
@@ -111,13 +46,11 @@ function renderComponents(sites) {
     const pct = tracked.length ? (100 - (down / (tracked.length * 1440)) * 100).toFixed(2) : "100.00";
     const c = el("div", "component");
     const row = el("div", "row");
-    const name = el("a", "name", s.name); name.href = s.url; name.style.color = "inherit";
-    row.append(name, el("span", "state " + s.status, STATE_TEXT[s.status] || s.status));
-    const bars = el("div", "bars");
-    bars.setAttribute("aria-hidden", "true");
+    row.append(link(s.name, s.url, "name"), el("span", "state " + s.status, STATE_TEXT[s.status] || s.status));
+    const bars = el("div", "bars"); bars.setAttribute("aria-hidden", "true");
     for (const d of days) {
-      const b = el("div", "bar " + barLevel(d, dmd[d]));
-      b.dataset.day = d; b.dataset.min = dmd[d] || 0;
+      const b = el("div", `bar ${level(d, dmd[d])}-bg`);
+      b.dataset.tipDay = d; b.dataset.min = dmd[d] || 0;
       bars.append(b);
     }
     const legend = el("div", "legend");
@@ -127,63 +60,36 @@ function renderComponents(sites) {
   }
 }
 
-function incidentEl(issue, active) {
-  const i = el("div", "incident" + (active ? " active" : ""));
-  const h = el("h3"); const a = el("a", null, issue.title.replace(/^🛑\s*/, "")); a.href = issue.html_url; a.style.color = "inherit";
-  h.append(a);
-  const end = issue.closed_at ? new Date(issue.closed_at) : new Date();
-  const text = active
-    ? `Ongoing since ${fmtTime(issue.created_at)} · ${fmtDur(end - new Date(issue.created_at))}`
-    : `Resolved · ${fmtTime(issue.created_at)} – ${fmtTime(issue.closed_at)} (${fmtDur(end - new Date(issue.created_at))})`;
-  i.append(h, el("p", null, text));
-  return i;
-}
-
-function renderIncidents(issues) {
-  const open = issues.filter((i) => i.state === "open");
+function renderIncidents(incidents) {
+  const open = incidents.filter((i) => i.state === "open");
   const act = $("active"); act.replaceChildren();
-  if (open.length) { const card = el("div", "card"); open.forEach((i) => card.append(incidentEl(i, true))); act.append(card); }
+  if (open.length) { const card = el("div", "card"); open.forEach((i) => card.append(incidentEl(i))); act.append(card); }
   const hist = $("history"); hist.replaceChildren();
   for (const d of lastDays(HISTORY_DAYS).reverse()) {
     const day = el("div", "day"); day.append(el("h4", null, fmtDay(d)));
-    const list = issues.filter((i) => i.state === "closed" && i.created_at.slice(0, 10) === d);
-    if (list.length) list.forEach((i) => day.append(incidentEl(i, false)));
+    const list = incidents.filter((i) => i.state === "closed" && i.createdAt.slice(0, 10) === d);
+    if (list.length) list.forEach((i) => day.append(incidentEl(i)));
     else day.append(el("p", "none", "No incidents reported."));
     hist.append(day);
   }
 }
 
-// one shared tooltip for all bars (thousands of nodes; per-bar listeners would be wasteful)
-const tip = $("tip");
-document.addEventListener("pointerover", (e) => {
-  const b = e.target.closest(".bar"); if (!b) { tip.style.display = "none"; return; }
-  const min = +b.dataset.min, nodata = b.classList.contains("nodata");
-  tip.replaceChildren(el("b", null, fmtDay(b.dataset.day)),
-    document.createTextNode(nodata ? "No data" : min ? `${fmtDur(min * 60000)} downtime` : "No downtime recorded"));
-  const r = b.getBoundingClientRect();
-  tip.style.display = "block";
-  tip.style.left = Math.min(window.innerWidth - tip.offsetWidth - 8, Math.max(8, r.left + r.width / 2 - tip.offsetWidth / 2)) + "px";
-  tip.style.top = r.top - tip.offsetHeight - 8 + "px";
-});
-
 async function load() {
   try {
-    const sites = await fetch(`https://raw.githubusercontent.com/${REPO}/HEAD/history/summary.json`, { cache: "no-cache" }).then((r) => { if (!r.ok) throw r.status; return r.json(); });
+    const sites = await loadSummary();
     const [cls, text] = overall(sites);
     $("banner").className = "banner " + cls; $("banner").textContent = text;
     renderComponents(sites);
-  } catch (e) {
+  } catch {
     $("banner").className = "banner loading"; $("banner").textContent = "Status data could not be loaded.";
   }
   try {
-    const issues = await fetch(`https://api.github.com/repos/${REPO}/issues?state=all&labels=status&per_page=100`).then((r) => { if (!r.ok) throw r.status; return r.json(); });
-    renderIncidents(issues.filter((i) => !i.pull_request));
-  } catch (e) {
-    const p = el("p", "none", "Incident history unavailable (GitHub API rate limit). See ");
-    const a = el("a", null, "GitHub issues"); a.href = `https://github.com/${REPO}/issues`;
-    p.append(a, "."); $("history").replaceChildren(p);
+    renderIncidents((await getJSON("/incidents/recent.json")).incidents);
+  } catch {
+    $("history").replaceChildren(el("p", "none", "Incident history could not be loaded."));
   }
 }
+initTooltip();
 load();
 setInterval(load, 5 * 60 * 1000);
 </script>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Uptime History · jinc.io Status</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main>
+  <header>
+    <h1><a href="/">jinc.io <span>Status</span></a></h1>
+    <nav><a href="/">Status</a><a href="/incidents/">Incidents</a><a href="/uptime/" aria-current="page">Uptime</a><a href="/feed.xml">Feed</a></nav>
+  </header>
+  <h2>Uptime History</h2>
+  <p><label>Service <select id="site"></select></label></p>
+  <div class="pager"><button id="newer" type="button">← Newer</button><span id="range" class="muted"></span><button id="older" type="button">Older →</button></div>
+  <div class="card"><div id="months" class="months"><p class="none">Loading…</p></div></div>
+  <p class="muted" style="font-size:.8rem">
+    <span class="up-bg" style="display:inline-block;width:10px;height:10px;border-radius:2px"></span> no downtime ·
+    <span class="minor-bg" style="display:inline-block;width:10px;height:10px;border-radius:2px"></span> under 1 h ·
+    <span class="major-bg" style="display:inline-block;width:10px;height:10px;border-radius:2px"></span> 1 h or more ·
+    <span class="nodata-bg" style="display:inline-block;width:10px;height:10px;border-radius:2px"></span> no data
+  </p>
+  <footer>Powered by <a href="https://upptime.js.org">Upptime</a></footer>
+</main>
+<script src="/common.js"></script>
+<script>
+const PER_PAGE = 3;
+let sites = [], page = 0;
+const today = dayKey(new Date());
+
+function monthEl(site, y, m) {
+  const first = new Date(Date.UTC(y, m, 1)), days = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+  const dmd = site.dailyMinutesDown || {};
+  const box = el("div", "month"), cal = el("div", "cal");
+  let tracked = 0, down = 0;
+  for (let i = 0; i < (first.getUTCDay() + 6) % 7; i++) cal.append(el("div", "pad")); // weeks start Monday
+  for (let d = 1; d <= days; d++) {
+    const key = dayKey(new Date(Date.UTC(y, m, d)));
+    let c;
+    if (key > today) c = el("div", "future");
+    else {
+      c = el("div", level(key, dmd[key]) + "-bg");
+      c.dataset.tipDay = key; c.dataset.min = dmd[key] || 0;
+      if (key >= DATA_START) { tracked++; down += dmd[key] || 0; }
+    }
+    cal.append(c);
+  }
+  const h = el("h4"); const name = first.toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
+  h.append(el("span", null, name), el("span", "muted", tracked ? `${(100 - down / (tracked * 1440) * 100).toFixed(2)} %` : "–"));
+  box.append(h, cal);
+  box.setAttribute("aria-label", `${name}: ${tracked ? (100 - down / (tracked * 1440) * 100).toFixed(2) + " percent uptime" : "no data"}`);
+  return box;
+}
+
+function render() {
+  const site = sites.find((s) => s.slug === $("site").value) || sites[0];
+  const now = new Date(), out = $("months"); out.replaceChildren();
+  const shown = [];
+  for (let i = page * PER_PAGE + PER_PAGE - 1; i >= page * PER_PAGE; i--) shown.push(new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - i, 1)));
+  shown.forEach((d) => out.append(monthEl(site, d.getUTCFullYear(), d.getUTCMonth())));
+  const fmt = (d) => d.toLocaleDateString("en-US", { month: "short", year: "numeric", timeZone: "UTC" });
+  $("range").textContent = `${fmt(shown[0])} – ${fmt(shown.at(-1))}`;
+  $("newer").disabled = page === 0;
+  $("older").disabled = dayKey(shown[0]) <= DATA_START;
+  const u = new URL(location); u.searchParams.set("service", site.slug); history.replaceState(null, "", u);
+}
+
+$("newer").onclick = () => { page--; render(); };
+$("older").onclick = () => { page++; render(); };
+$("site").onchange = render;
+initTooltip();
+loadSummary().then((data) => {
+  sites = data;
+  for (const s of sites) { const o = el("option", null, s.name); o.value = s.slug; $("site").append(o); }
+  const wanted = new URL(location).searchParams.get("service");
+  if (sites.some((s) => s.slug === wanted)) $("site").value = wanted;
+  render();
+}).catch(() => $("months").replaceChildren(el("p", "none", "Uptime data could not be loaded.")));
+</script>
+</body>
+</html>

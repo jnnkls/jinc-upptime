@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Incident History · jinc.io Status</title>
+<link rel="stylesheet" href="/style.css">
+<link rel="alternate" type="application/atom+xml" title="jinc.io Status" href="/feed.xml">
+</head>
+<body>
+<main>
+  <header>
+    <h1><a href="/">jinc.io <span>Status</span></a></h1>
+    <nav><a href="/">Status</a><a href="/incidents/" aria-current="page">Incidents</a><a href="/uptime/">Uptime</a><a href="/feed.xml">Feed</a></nav>
+  </header>
+  <h2>Incident History</h2>
+  <div class="pager"><button id="newer" type="button">← Newer</button><span id="range" class="muted"></span><button id="older" type="button">Older →</button></div>
+  <div id="list"><p class="none">Loading…</p></div>
+  <footer>Powered by <a href="https://upptime.js.org">Upptime</a></footer>
+</main>
+<script src="/common.js"></script>
+<script>
+const PER_PAGE = 3; // months per page; each month is its own small JSON file
+let months = [], page = 0;
+const cache = new Map();
+const monthName = (m) => new Date(m + "-01T00:00:00Z").toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
+const loadMonth = (m) => cache.get(m) || cache.set(m, getJSON(`/incidents/${m}.json`).then((d) => d.incidents)).get(m);
+
+// pages always cover the current month backwards, also months without incidents (they have no file)
+function monthsBack(fromMonth, count) {
+  const d = new Date(fromMonth + "-01T00:00:00Z");
+  return Array.from({ length: count }, (_, i) => dayKey(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() - i, 1))).slice(0, 7));
+}
+
+async function render() {
+  const current = dayKey(new Date()).slice(0, 7);
+  const oldest = months.at(-1)?.month || current;
+  const shown = monthsBack(current, (page + 1) * PER_PAGE).slice(page * PER_PAGE);
+  const withData = new Set(months.map((m) => m.month));
+  $("range").textContent = `${monthName(shown.at(-1))} – ${monthName(shown[0])}`;
+  $("newer").disabled = page === 0;
+  $("older").disabled = shown.at(-1) <= oldest;
+  const list = $("list"); list.replaceChildren();
+  for (const m of shown) {
+    const sec = el("section", "day"); sec.append(el("h4", null, monthName(m)));
+    const incidents = withData.has(m) ? await loadMonth(m) : [];
+    if (incidents.length) incidents.forEach((i) => sec.append(incidentEl(i, { collapsed: true })));
+    else sec.append(el("p", "none", "No incidents reported this month."));
+    list.append(sec);
+  }
+  openFromHash();
+}
+
+// /incidents/#123 opens that incident, paging back to its month if needed
+async function openFromHash() {
+  const n = location.hash.slice(1);
+  if (!n) return;
+  const target = document.getElementById(n);
+  if (target) { target.open = true; target.scrollIntoView({ block: "start" }); return; }
+  for (const { month } of months) {
+    if ((await loadMonth(month)).some((i) => String(i.number) === n)) {
+      const current = dayKey(new Date()).slice(0, 7);
+      const p = Math.floor(monthsBack(current, 1200).indexOf(month) / PER_PAGE);
+      if (p >= 0 && p !== page) { page = p; return render(); }
+      return;
+    }
+  }
+}
+
+$("newer").onclick = () => { page--; render(); };
+$("older").onclick = () => { page++; render(); };
+addEventListener("hashchange", openFromHash);
+getJSON("/incidents/index.json")
+  .then((idx) => { months = idx.months; return render(); })
+  .catch(() => $("list").replaceChildren(el("p", "none", "Incident history could not be loaded.")));
+</script>
+</body>
+</html>
