@@ -38,6 +38,8 @@ sites:
     url: https://watchbin.jinc.io
   - name: Braid
     url: https://braid.jinc.io/auth/login
+  - name: usebraid.dev
+    url: https://usebraid.dev
   - name: VERT
     url: https://vert.jinc.io
   - name: Hoppscotch
