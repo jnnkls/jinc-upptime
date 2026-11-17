@@ -4,55 +4,7 @@
   <id>https://status.jinc.io/</id>
   <link href="https://status.jinc.io/"/>
   <link rel="self" href="https://status.jinc.io/feed.xml"/>
-  <updated>2026-11-17T20:48:29Z</updated>
-  <entry>
-    <id>https://github.com/jnnkls/jinc-upptime/issues/11</id>
-    <title>[Resolved] Immich is down</title>
-    <link href="https://status.jinc.io/incidents/#11"/>
-    <published>2026-11-17T05:09:57Z</published>
-    <updated>2026-11-17T20:48:29Z</updated>
-    <content type="text">RESOLVED (2026-11-17T20:48:28Z): Immich is back up in ec5754e after 15 hours, 38 minutes.
-
-INVESTIGATING (2026-11-17T05:09:57Z): Immich (https://immich.jinc.io/api/server/ping) was down:
-- HTTP code: 0
-- Response time: 0 ms</content>
-  </entry>
-  <entry>
-    <id>https://github.com/jnnkls/jinc-upptime/issues/10</id>
-    <title>[Resolved] Bastion is down</title>
-    <link href="https://status.jinc.io/incidents/#10"/>
-    <published>2026-11-17T05:05:04Z</published>
-    <updated>2026-11-17T20:48:24Z</updated>
-    <content type="text">RESOLVED (2026-11-17T20:48:23Z): Bastion is back up in 01fbae9 after 15 hours, 43 minutes.
-
-INVESTIGATING (2026-11-17T05:05:04Z): Bastion (https://bastion.jinc.io) was down:
-- HTTP code: 0
-- Response time: 0 ms</content>
-  </entry>
-  <entry>
-    <id>https://github.com/jnnkls/jinc-upptime/issues/9</id>
-    <title>[Resolved] ntfy is down</title>
-    <link href="https://status.jinc.io/incidents/#9"/>
-    <published>2026-11-17T05:00:10Z</published>
-    <updated>2026-11-17T20:48:19Z</updated>
-    <content type="text">RESOLVED (2026-11-17T20:48:19Z): ntfy is back up in 09988a7 after 15 hours, 48 minutes.
-
-INVESTIGATING (2026-11-17T05:00:10Z): ntfy (https://ntfy.jinc.io/v1/health) was down:
-- HTTP code: 0
-- Response time: 0 ms</content>
-  </entry>
-  <entry>
-    <id>https://github.com/jnnkls/jinc-upptime/issues/8</id>
-    <title>[Resolved] Mail is down</title>
-    <link href="https://status.jinc.io/incidents/#8"/>
-    <published>2026-11-17T04:55:16Z</published>
-    <updated>2026-11-17T20:48:13Z</updated>
-    <content type="text">RESOLVED (2026-11-17T20:48:13Z): Mail is back up in 07675e0 after 15 hours, 52 minutes.
-
-INVESTIGATING (2026-11-17T04:55:16Z): Mail (https://mail.jinc.io) was down:
-- HTTP code: 0
-- Response time: 0 ms</content>
-  </entry>
+  <updated>2026-11-15T22:26:45Z</updated>
   <entry>
     <id>https://github.com/jnnkls/jinc-upptime/issues/4</id>
     <title>[Resolved] Mail is down</title>
