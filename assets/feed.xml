@@ -4,7 +4,17 @@
   <id>https://status.jinc.io/</id>
   <link href="https://status.jinc.io/"/>
   <link rel="self" href="https://status.jinc.io/feed.xml"/>
-  <updated>2026-11-17T04:55:16Z</updated>
+  <updated>2026-11-17T05:00:10Z</updated>
+  <entry>
+    <id>https://github.com/jnnkls/jinc-upptime/issues/9</id>
+    <title>ntfy is down</title>
+    <link href="https://status.jinc.io/incidents/#9"/>
+    <published>2026-11-17T05:00:10Z</published>
+    <updated>2026-11-17T05:00:10Z</updated>
+    <content type="text">INVESTIGATING (2026-11-17T05:00:10Z): ntfy (https://ntfy.jinc.io/v1/health) was down:
+- HTTP code: 0
+- Response time: 0 ms</content>
+  </entry>
   <entry>
     <id>https://github.com/jnnkls/jinc-upptime/issues/8</id>
     <title>Mail is down</title>
