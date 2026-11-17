@@ -11,17 +11,25 @@ sites:
       - "X-Upptime-Token: $UPPTIME_WAF_TOKEN" # passes the zone's IP/geo WAF block
   - name: Mail
     url: https://mail.jinc.io
+    type: globalping # owl is behind CrowdSec; GitHub runner IPs are often on its blocklists
+    location: Germany
   - name: ID (SSO)
     url: https://id.jinc.io
   - name: ntfy
     url: https://ntfy.jinc.io/v1/health
+    type: globalping # owl is behind CrowdSec; GitHub runner IPs are often on its blocklists
+    location: Germany
   - name: Bastion
     url: https://bastion.jinc.io
+    type: globalping # owl is behind CrowdSec; GitHub runner IPs are often on its blocklists
+    location: Germany
     expectedStatusCodes: [401] # behind basic auth, 401 means up
   - name: Matrix
     url: https://matrix.jnnkls.wtf/_matrix/client/versions
   - name: Immich
     url: https://immich.jinc.io/api/server/ping
+    type: globalping # owl is behind CrowdSec; GitHub runner IPs are often on its blocklists
+    location: Germany
   - name: n8n
     url: https://n8n.jinc.io/healthz
   - name: HedgeDoc
