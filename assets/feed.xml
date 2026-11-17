@@ -4,24 +4,28 @@
   <id>https://status.jinc.io/</id>
   <link href="https://status.jinc.io/"/>
   <link rel="self" href="https://status.jinc.io/feed.xml"/>
-  <updated>2026-11-17T20:48:19Z</updated>
+  <updated>2026-11-17T20:48:29Z</updated>
   <entry>
     <id>https://github.com/jnnkls/jinc-upptime/issues/11</id>
-    <title>Immich is down</title>
+    <title>[Resolved] Immich is down</title>
     <link href="https://status.jinc.io/incidents/#11"/>
     <published>2026-11-17T05:09:57Z</published>
-    <updated>2026-11-17T05:09:57Z</updated>
-    <content type="text">INVESTIGATING (2026-11-17T05:09:57Z): Immich (https://immich.jinc.io/api/server/ping) was down:
+    <updated>2026-11-17T20:48:29Z</updated>
+    <content type="text">RESOLVED (2026-11-17T20:48:28Z): Immich is back up in ec5754e after 15 hours, 38 minutes.
+
+INVESTIGATING (2026-11-17T05:09:57Z): Immich (https://immich.jinc.io/api/server/ping) was down:
 - HTTP code: 0
 - Response time: 0 ms</content>
   </entry>
   <entry>
     <id>https://github.com/jnnkls/jinc-upptime/issues/10</id>
-    <title>Bastion is down</title>
+    <title>[Resolved] Bastion is down</title>
     <link href="https://status.jinc.io/incidents/#10"/>
     <published>2026-11-17T05:05:04Z</published>
-    <updated>2026-11-17T05:05:04Z</updated>
-    <content type="text">INVESTIGATING (2026-11-17T05:05:04Z): Bastion (https://bastion.jinc.io) was down:
+    <updated>2026-11-17T20:48:24Z</updated>
+    <content type="text">RESOLVED (2026-11-17T20:48:23Z): Bastion is back up in 01fbae9 after 15 hours, 43 minutes.
+
+INVESTIGATING (2026-11-17T05:05:04Z): Bastion (https://bastion.jinc.io) was down:
 - HTTP code: 0
 - Response time: 0 ms</content>
   </entry>
