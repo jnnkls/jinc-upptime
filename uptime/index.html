@@ -73,7 +73,7 @@ $("site").onchange = render;
 initTooltip();
 const optional = (url) => getJSON(url).then((d) => d.incidents).catch(() => []);
 Promise.all([loadSummary(), optional("/incidents/recent.json"), optional("/incidents/overrides.json")]).then(([data, incidents, overrides]) => {
-  sites = applyOngoing(applyOverrides(data, overrides), incidents);
+  sites = applyIncidents(applyOverrides(data, overrides), incidents);
   for (const s of sites) { const o = el("option", null, s.name); o.value = s.slug; $("site").append(o); }
   const wanted = new URL(location).searchParams.get("service");
   if (sites.some((s) => s.slug === wanted)) $("site").value = wanted;
