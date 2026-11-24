@@ -4,7 +4,17 @@
   <id>https://status.jinc.io/</id>
   <link href="https://status.jinc.io/"/>
   <link rel="self" href="https://status.jinc.io/feed.xml"/>
-  <updated>2026-11-15T22:26:45Z</updated>
+  <updated>2026-11-24T18:42:57Z</updated>
+  <entry>
+    <id>https://github.com/jnnkls/jinc-upptime/issues/12</id>
+    <title>Immich is down</title>
+    <link href="https://status.jinc.io/incidents/#12"/>
+    <published>2026-11-24T18:42:57Z</published>
+    <updated>2026-11-24T18:42:57Z</updated>
+    <content type="text">INVESTIGATING (2026-11-24T18:42:57Z): Immich (https://immich.jinc.io/api/server/ping) was down:
+- HTTP code: 502
+- Response time: 91 ms</content>
+  </entry>
   <entry>
     <id>https://github.com/jnnkls/jinc-upptime/issues/4</id>
     <title>[Resolved] Mail is down</title>

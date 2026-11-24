@@ -75,19 +75,17 @@ function renderIncidents(incidents) {
 }
 
 async function load() {
+  const incidents = getJSON("/incidents/recent.json").then((d) => d.incidents).catch(() => null);
   try {
     const sites = await loadSummary();
     const [cls, text] = overall(sites);
     $("banner").className = "banner " + cls; $("banner").textContent = text;
-    renderComponents(sites);
+    renderComponents(applyOngoing(sites, (await incidents) || []));
   } catch {
     $("banner").className = "banner loading"; $("banner").textContent = "Status data could not be loaded.";
   }
-  try {
-    renderIncidents((await getJSON("/incidents/recent.json")).incidents);
-  } catch {
-    $("history").replaceChildren(el("p", "none", "Incident history could not be loaded."));
-  }
+  if (await incidents) renderIncidents(await incidents);
+  else $("history").replaceChildren(el("p", "none", "Incident history could not be loaded."));
 }
 initTooltip();
 load();

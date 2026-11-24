@@ -71,8 +71,8 @@ $("newer").onclick = () => { page--; render(); };
 $("older").onclick = () => { page++; render(); };
 $("site").onchange = render;
 initTooltip();
-loadSummary().then((data) => {
-  sites = data;
+Promise.all([loadSummary(), getJSON("/incidents/recent.json").then((d) => d.incidents).catch(() => [])]).then(([data, incidents]) => {
+  sites = applyOngoing(data, incidents);
   for (const s of sites) { const o = el("option", null, s.name); o.value = s.slug; $("site").append(o); }
   const wanted = new URL(location).searchParams.get("service");
   if (sites.some((s) => s.slug === wanted)) $("site").value = wanted;
