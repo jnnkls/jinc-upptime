@@ -23,6 +23,25 @@ const fmtDur = (ms) => { const m = Math.max(1, Math.round(ms / 60000)); return m
 const level = (day, minutes) => (day < DATA_START ? "nodata" : !minutes ? "up" : minutes < 60 ? "minor" : "major");
 const levelText = (day, minutes) => (day < DATA_START ? "No data" : minutes ? `${fmtDur(minutes * 60000)} downtime` : "No downtime recorded");
 
+// Upptime only counts downtime of closed issues, so a running outage would show green bars.
+// Adds the elapsed minutes of open incidents per UTC day (max with the recorded value, never double).
+function applyOngoing(sites, incidents, now = new Date()) {
+  for (const inc of incidents) {
+    if (inc.state !== "open" || inc.type !== "incident") continue;
+    for (const s of sites) {
+      if (!inc.sites.includes(s.slug)) continue;
+      const dmd = (s.dailyMinutesDown = { ...s.dailyMinutesDown });
+      for (let t = new Date(inc.createdAt); t < now; ) {
+        const next = new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), t.getUTCDate() + 1));
+        const key = dayKey(t);
+        dmd[key] = Math.max(dmd[key] || 0, Math.round((Math.min(next, now) - t) / 60000));
+        t = next;
+      }
+    }
+  }
+  return sites;
+}
+
 async function getJSON(url) {
   const r = await fetch(url, { cache: "no-cache" });
   if (!r.ok) throw new Error(`${r.status} ${url}`);
@@ -73,3 +92,6 @@ function initTooltip() {
     tip.style.top = Math.max(8, r.top - tip.offsetHeight - 8) + "px";
   });
 }
+
+// lets the node tests require this browser script
+if (typeof module === "object") module.exports = { applyOngoing, level };

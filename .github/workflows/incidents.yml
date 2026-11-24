@@ -31,7 +31,7 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: "22"
-      - run: node --test scripts/incidents.test.mjs
+      - run: node --test scripts/incidents.test.mjs scripts/common.test.mjs
       - name: Build incident data
         run: node scripts/incidents.mjs
         env:
@@ -42,7 +42,9 @@ jobs:
         run: |
           git add assets/incidents assets/feed.xml
           git diff --cached --quiet && { echo "No changes"; exit 0; }
-          git -c user.name="Upptime Bot" -c user.email="73812536+upptime-bot@users.noreply.github.com" \
-            commit -m ":memo: Update incident data"
+          # repo-level identity: the rebase below rewrites the commit and needs it too
+          git config user.name "Upptime Bot"
+          git config user.email "73812536+upptime-bot@users.noreply.github.com"
+          git commit -m ":memo: Update incident data"
           for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep $((i * 5)); done
           exit 1
