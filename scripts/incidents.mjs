@@ -3,8 +3,9 @@
 //   assets/incidents/index.json    { cursor, months: [{ month: "YYYY-MM", count }] }        newest first; cursor = newest issue updated_at
 //   assets/incidents/YYYY-MM.json  { month, incidents: Incident[] }                          one file per month, bounded size
 //   assets/incidents/recent.json   { incidents: Incident[] }                                  open + last RECENT_DAYS days
+//   assets/incidents/overrides.json { incidents: [{ number, sites, createdAt, closedAt, downtime }] } all corrected incidents
 //   assets/feed.xml                Atom feed of the latest FEED_ITEMS incidents
-// Incident: { number, title, url, state, type, sites, createdAt, closedAt, updates: [{ id, createdAt, status, text }] }
+// Incident: { number, title, url, state, type, sites, createdAt, closedAt, downtime?: { start, end }, updates: [{ id, createdAt, status, text }] }
 // Incremental: only issues updated since the cursor are refetched; FULL=1 rebuilds everything.
 // No wall-clock timestamps in the output, so an unchanged run writes identical files (no commit, no site rebuild).
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
@@ -34,6 +35,18 @@ export function plain(md) {
     .slice(0, MAX_TEXT);
 }
 
+// A line "Downtime: <ISO start> – <ISO end>" in the issue or a comment states the real outage window.
+// GitHub's created_at/closed_at cannot be edited and only say when Upptime noticed. Last valid line wins.
+const DOWNTIME_RE = /^[\s*_]*downtime[\s*_]*:[\s*_]*(\S+)\s+(?:–|—|-|to)\s+(\S+?)[\s*_.]*$/gim;
+export function parseDowntime(texts) {
+  let out = null;
+  for (const t of texts) for (const m of (t || "").matchAll(DOWNTIME_RE)) {
+    const start = Date.parse(m[1]), end = Date.parse(m[2]);
+    if (end > start) out = { start: new Date(start).toISOString(), end: new Date(end).toISOString() };
+  }
+  return out;
+}
+
 export function parseUpdate(id, createdAt, body) {
   const m = (body || "").match(STATUS_RE);
   return { id, createdAt, status: m ? m[1].toLowerCase() : "update", text: plain(m ? body.slice(m[0].length) : body) };
@@ -43,6 +56,7 @@ export function toIncident(issue, comments) {
   const labels = issue.labels.map((l) => (typeof l === "string" ? l : l.name));
   const auto = /^\s*In \[`/.test(issue.body || ""); // Upptime's own "X was down" body
   const first = parseUpdate(`issue-${issue.number}`, issue.created_at, issue.body);
+  const downtime = parseDowntime([issue.body, ...comments.map((c) => c.body)]);
   if (first.status === "update") first.status = labels.includes("maintenance") ? "scheduled" : "investigating";
   if (auto) first.text = first.text.replace(/^In [0-9a-f]{7},\s*/, "");
   return {
@@ -54,6 +68,7 @@ export function toIncident(issue, comments) {
     sites: labels.filter((l) => !LABELS.has(l)),
     createdAt: issue.created_at,
     closedAt: issue.closed_at,
+    ...(downtime && { downtime }),
     updates: [first, ...comments.map((c) => parseUpdate(c.id, c.created_at, c.body))].filter((u) => u.text),
   };
 }
@@ -137,6 +152,8 @@ async function main() {
   const recent = all.filter((i) => i.state === "open" || i.createdAt >= cutoff);
   const cursor = [index?.cursor, ...issues.map((i) => i.updated_at)].filter(Boolean).sort().at(-1) || null;
   await writeFile(join(dir, "recent.json"), JSON.stringify({ incidents: recent }) + "\n");
+  const overrides = all.filter((i) => i.downtime).map(({ number, sites, createdAt, closedAt, downtime }) => ({ number, sites, createdAt, closedAt, downtime }));
+  await writeFile(join(dir, "overrides.json"), JSON.stringify({ incidents: overrides }) + "\n");
   await writeFile(join(dir, "index.json"), JSON.stringify({ cursor, months: [...byMonth].map(([month, l]) => ({ month, count: l.length })) }) + "\n");
   await writeFile(join(OUT, "feed.xml"), atom(all));
   console.log(`${issues.length} issues fetched${since ? ` since ${since}` : " (full)"}, ${all.length} incidents in ${byMonth.size} month files, ${recent.length} recent`);

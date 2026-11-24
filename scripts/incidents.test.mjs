@@ -45,3 +45,22 @@ test("atom escapes content and has a stable updated timestamp", () => {
   assert.match(xml, /<updated>2026-01-01T00:05:00Z<\/updated>/);
   assert.equal(atom([inc]), xml);
 });
+
+test("parseDowntime reads the last valid Downtime line", async () => {
+  const { parseDowntime } = await import("./incidents.mjs");
+  const a = "2026-11-24T18:40:25Z", b = "2026-11-24T18:44:07Z";
+  assert.deepEqual(parseDowntime([`Resolved: whale crashed\n\nDowntime: ${a} – ${b}`]),
+    { start: "2026-11-24T18:40:25.000Z", end: "2026-11-24T18:44:07.000Z" });
+  assert.equal(parseDowntime([`**Downtime:** ${a} to ${b}`]).end, "2026-11-24T18:44:07.000Z");
+  assert.equal(parseDowntime([`Downtime: ${b} - ${a}`]), null, "end before start is ignored");
+  assert.equal(parseDowntime(["Downtime: soon - later", null, "no line here"]), null);
+  assert.equal(parseDowntime([`Downtime: ${a} – 2026-11-24T19:00:00Z`, `Downtime: ${a} – ${b}`]).end, "2026-11-24T18:44:07.000Z");
+});
+
+test("toIncident carries a downtime override only when present", () => {
+  const base = { number: 12, title: "🛑 Immich is down", html_url: "u", state: "closed", labels: [{ name: "status" }, { name: "immich" }],
+    created_at: "2026-11-24T18:42:30Z", closed_at: "2026-11-24T22:41:07Z", body: "In [`abc1234`](x), Immich was **down**" };
+  assert.equal("downtime" in toIncident(base, []), false);
+  const i = toIncident(base, [{ id: 1, created_at: "t", body: "Resolved: internal server outage\n\nDowntime: 2026-11-24T18:40:25Z – 2026-11-24T18:44:07Z" }]);
+  assert.deepEqual(i.downtime, { start: "2026-11-24T18:40:25.000Z", end: "2026-11-24T18:44:07.000Z" });
+});

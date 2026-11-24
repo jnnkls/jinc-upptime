@@ -23,21 +23,43 @@ const fmtDur = (ms) => { const m = Math.max(1, Math.round(ms / 60000)); return m
 const level = (day, minutes) => (day < DATA_START ? "nodata" : !minutes ? "up" : minutes < 60 ? "minor" : "major");
 const levelText = (day, minutes) => (day < DATA_START ? "No data" : minutes ? `${fmtDur(minutes * 60000)} downtime` : "No downtime recorded");
 
-// Upptime only counts downtime of closed issues, so a running outage would show green bars.
+// Minutes per UTC day covered by [start, end), rounded like Upptime does.
+function perDay(start, end) {
+  const out = {};
+  for (let t = new Date(start); t < end; ) {
+    const next = new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), t.getUTCDate() + 1));
+    out[dayKey(t)] = Math.round((Math.min(next, end) - t) / 60000);
+    t = next;
+  }
+  return out;
+}
+
+// Calls fn(dailyMinutesDown copy) for every site the incident affects.
+function eachSite(sites, inc, fn) {
+  for (const s of sites) if (inc.sites.includes(s.slug)) fn((s.dailyMinutesDown = { ...s.dailyMinutesDown }));
+}
+
+// The summary only holds downtime as of the last Uptime CI run, so a running outage would show green bars.
 // Adds the elapsed minutes of open incidents per UTC day (max with the recorded value, never double).
 function applyOngoing(sites, incidents, now = new Date()) {
   for (const inc of incidents) {
     if (inc.state !== "open" || inc.type !== "incident") continue;
-    for (const s of sites) {
-      if (!inc.sites.includes(s.slug)) continue;
-      const dmd = (s.dailyMinutesDown = { ...s.dailyMinutesDown });
-      for (let t = new Date(inc.createdAt); t < now; ) {
-        const next = new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), t.getUTCDate() + 1));
-        const key = dayKey(t);
-        dmd[key] = Math.max(dmd[key] || 0, Math.round((Math.min(next, now) - t) / 60000));
-        t = next;
-      }
-    }
+    eachSite(sites, inc, (dmd) => {
+      for (const [k, m] of Object.entries(perDay(new Date(inc.createdAt), now))) dmd[k] = Math.max(dmd[k] || 0, m);
+    });
+  }
+  return sites;
+}
+
+// Upptime counts issue created_at..closed_at. For closed incidents with a "Downtime:" correction,
+// swap those minutes for the real window.
+function applyOverrides(sites, overrides) {
+  for (const o of overrides) {
+    if (!o.closedAt) continue;
+    eachSite(sites, o, (dmd) => {
+      for (const [k, m] of Object.entries(perDay(new Date(o.createdAt), new Date(o.closedAt)))) dmd[k] = Math.max(0, (dmd[k] || 0) - m);
+      for (const [k, m] of Object.entries(perDay(new Date(o.downtime.start), new Date(o.downtime.end)))) dmd[k] = (dmd[k] || 0) + m;
+    });
   }
   return sites;
 }
@@ -68,8 +90,9 @@ function incidentEl(incident, { collapsed = false } = {}) {
   const wrap = el(collapsed ? "details" : "div", cls);
   wrap.id = String(incident.number);
   const h = el("h3"); h.append(link(incident.title, `/incidents/#${incident.number}`));
-  const end = incident.closedAt ? new Date(incident.closedAt) : new Date();
-  const meta = el("div", "muted", `${incident.state === "open" ? "Ongoing" : "Resolved"} · ${fmtDur(end - new Date(incident.createdAt))}`);
+  const d = incident.downtime;
+  const end = d ? new Date(d.end) : incident.closedAt ? new Date(incident.closedAt) : new Date();
+  const meta = el("div", "muted", `${incident.state === "open" ? "Ongoing" : "Resolved"} · ${fmtDur(end - new Date(d ? d.start : incident.createdAt))}`);
   meta.style.fontSize = ".8rem";
   if (collapsed) {
     const s = el("summary"); s.append(h, meta); wrap.append(s, updatesEl(incident));
@@ -94,4 +117,4 @@ function initTooltip() {
 }
 
 // lets the node tests require this browser script
-if (typeof module === "object") module.exports = { applyOngoing, level };
+if (typeof module === "object") module.exports = { applyOngoing, applyOverrides, level };
