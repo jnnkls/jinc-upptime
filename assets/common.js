@@ -39,14 +39,26 @@ function eachSite(sites, inc, fn) {
   for (const s of sites) if (inc.sites.includes(s.slug)) fn((s.dailyMinutesDown = { ...s.dailyMinutesDown }));
 }
 
-// The summary only holds downtime as of the last Uptime CI run, so a running outage would show green bars.
-// Adds the elapsed minutes of open incidents per UTC day (max with the recorded value, never double).
-function applyOngoing(sites, incidents, now = new Date()) {
+// summary.json is only rebuilt by the daily Summary CI, so recent and running outages would show green bars.
+// Adds each recent incident's window per UTC day (max with the recorded value, never double).
+// shortcut: a stale summary plus an override on the same day can undercount other downtime of that day until the daily rebuild.
+function applyIncidents(sites, incidents, now = new Date()) {
   for (const inc of incidents) {
-    if (inc.state !== "open" || inc.type !== "incident") continue;
+    if (inc.type !== "incident") continue;
+    const start = new Date(inc.downtime?.start || inc.createdAt);
+    const end = inc.downtime ? new Date(inc.downtime.end) : inc.closedAt ? new Date(inc.closedAt) : now;
     eachSite(sites, inc, (dmd) => {
-      for (const [k, m] of Object.entries(perDay(new Date(inc.createdAt), now))) dmd[k] = Math.max(dmd[k] || 0, m);
+      for (const [k, m] of Object.entries(perDay(start, end))) dmd[k] = Math.max(dmd[k] || 0, m);
     });
+  }
+  return sites;
+}
+
+// Open status issues are the live truth (Upptime opens them when down and closes them when back up).
+function applyLiveStatus(sites, incidents) {
+  for (const s of sites) {
+    const open = incidents.find((i) => i.state === "open" && i.type === "incident" && i.sites.includes(s.slug));
+    s.status = open ? (/degraded/i.test(open.title) ? "degraded" : "down") : "up";
   }
   return sites;
 }
@@ -117,4 +129,4 @@ function initTooltip() {
 }
 
 // lets the node tests require this browser script
-if (typeof module === "object") module.exports = { applyOngoing, applyOverrides, level };
+if (typeof module === "object") module.exports = { applyIncidents, applyLiveStatus, applyOverrides, level };
