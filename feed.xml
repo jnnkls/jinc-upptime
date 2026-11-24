@@ -4,14 +4,18 @@
   <id>https://status.jinc.io/</id>
   <link href="https://status.jinc.io/"/>
   <link rel="self" href="https://status.jinc.io/feed.xml"/>
-  <updated>2026-11-24T22:41:07Z</updated>
+  <updated>2026-11-24T22:44:38Z</updated>
   <entry>
     <id>https://github.com/jnnkls/jinc-upptime/issues/12</id>
     <title>[Resolved] Immich is down</title>
     <link href="https://status.jinc.io/incidents/#12"/>
     <published>2026-11-24T18:42:57Z</published>
     <updated>2026-11-24T22:41:07Z</updated>
-    <content type="text">RESOLVED (2026-11-24T22:41:06Z): Immich is back up in 36d1f6a after 3 hours, 58 minutes.
+    <content type="text">RESOLVED (2026-11-24T22:44:38Z): Outage of an internal server without an identifiable cause. Immich was back up after the server restarted.
+
+Downtime: 2026-11-24T18:40:25Z – 2026-11-24T18:44:07Z
+
+RESOLVED (2026-11-24T22:41:06Z): Immich is back up in 36d1f6a after 3 hours, 58 minutes.
 
 INVESTIGATING (2026-11-24T18:42:57Z): Immich (https://immich.jinc.io/api/server/ping) was down:
 - HTTP code: 502
