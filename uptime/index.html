@@ -71,8 +71,9 @@ $("newer").onclick = () => { page--; render(); };
 $("older").onclick = () => { page++; render(); };
 $("site").onchange = render;
 initTooltip();
-Promise.all([loadSummary(), getJSON("/incidents/recent.json").then((d) => d.incidents).catch(() => [])]).then(([data, incidents]) => {
-  sites = applyOngoing(data, incidents);
+const optional = (url) => getJSON(url).then((d) => d.incidents).catch(() => []);
+Promise.all([loadSummary(), optional("/incidents/recent.json"), optional("/incidents/overrides.json")]).then(([data, incidents, overrides]) => {
+  sites = applyOngoing(applyOverrides(data, overrides), incidents);
   for (const s of sites) { const o = el("option", null, s.name); o.value = s.slug; $("site").append(o); }
   const wanted = new URL(location).searchParams.get("service");
   if (sites.some((s) => s.slug === wanted)) $("site").value = wanted;

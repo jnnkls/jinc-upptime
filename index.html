@@ -76,11 +76,12 @@ function renderIncidents(incidents) {
 
 async function load() {
   const incidents = getJSON("/incidents/recent.json").then((d) => d.incidents).catch(() => null);
+  const overrides = getJSON("/incidents/overrides.json").then((d) => d.incidents).catch(() => []);
   try {
     const sites = await loadSummary();
     const [cls, text] = overall(sites);
     $("banner").className = "banner " + cls; $("banner").textContent = text;
-    renderComponents(applyOngoing(sites, (await incidents) || []));
+    renderComponents(applyOngoing(applyOverrides(sites, await overrides), (await incidents) || []));
   } catch {
     $("banner").className = "banner loading"; $("banner").textContent = "Status data could not be loaded.";
   }
